@@ -16,8 +16,12 @@ spring:
     password: 123456
   # 文件存储
   file-storage:
-    default-platform: webdav-1
+    default-platform: local-1
     thumbnail-suffix: ".min.jpg"
+    local:
+      - platform: local-1
+        enable-storage: true
+        base-path: D:/temp/test/
     ftp:
       - platform: ftp-1
         enable-storage: true
