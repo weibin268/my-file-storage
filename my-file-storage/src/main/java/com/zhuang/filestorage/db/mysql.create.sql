@@ -24,7 +24,8 @@ CREATE TABLE `sys_file_detail`
     `modify_time`       datetime     DEFAULT NULL COMMENT '修改时间',
     `status`            tinyint(4)   DEFAULT NULL COMMENT '状态：0=未提交；1=已提交；',
     PRIMARY KEY (`id`) USING BTREE,
-    KEY `idx_object_type_object_id` (`object_type`, `object_id`)
+    KEY `idx_object_type_object_id` (`object_type`, `object_id`),
+    KEY `idx_url` (`url`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8
-  ROW_FORMAT = DYNAMIC COMMENT ='文件上传记录表';
+  ROW_FORMAT = DYNAMIC COMMENT ='文件记录表';
