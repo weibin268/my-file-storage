@@ -77,10 +77,21 @@ public class FileStorageController {
     }
 
     /**
+     * 删除上传文件
+     */
+    @PostMapping("/delete")
+    public ApiResult<String> delete(@RequestParam("fileIds") List<String> fileIds) {
+        for (String fileId : fileIds) {
+            fileDetailService.deleteById(fileId);
+        }
+        return ApiResult.success("删除成功！");
+    }
+
+    /**
      * 提交上传记录
      */
     @PostMapping("/submit")
-    public ApiResult<String> submit(String objectType, String objectId,@RequestParam("fileIds") List<String> fileIds) {
+    public ApiResult<String> submit(String objectType, String objectId, @RequestParam("fileIds") List<String> fileIds) {
         fileDetailService.submitObjectTypeAndObjectId(objectType, objectId, fileIds);
         return ApiResult.success("提交成功！");
     }

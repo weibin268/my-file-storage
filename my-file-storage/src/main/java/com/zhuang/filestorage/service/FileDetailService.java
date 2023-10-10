@@ -77,6 +77,15 @@ public class FileDetailService extends ServiceImpl<FileDetailMapper, FileDetail>
         return remove(new LambdaQueryWrapper<FileDetail>().eq(FileDetail::getId, url));
     }
 
+    public boolean deleteById(String id) {
+        FileDetail fileDetail = getById(id);
+        if (fileDetail.getStatus().equals(FileDetailStatus.SUBMITTED.getValue())) {
+            return false;
+        } else {
+            return delete(id);
+        }
+    }
+
     public void submitObjectTypeAndObjectId(String objectType, String objectId, String fileId) {
         submitObjectTypeAndObjectId(objectType, objectId, Arrays.asList(fileId));
     }
