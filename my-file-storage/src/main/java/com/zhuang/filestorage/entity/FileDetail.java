@@ -1,8 +1,13 @@
 package com.zhuang.filestorage.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldStrategy;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+
 import java.io.Serializable;
 import java.util.Date;
+
+import com.zhuang.filestorage.enums.FileDetailStatus;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -94,11 +99,13 @@ public class FileDetail implements Serializable {
     /**
      * 文件所属对象id
      */
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private String objectId;
 
     /**
      * 文件所属对象类型，例如用户头像，评价图片
      */
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private String objectType;
 
     /**
@@ -121,5 +128,14 @@ public class FileDetail implements Serializable {
      */
     private Date createTime;
 
+    /**
+     * 修该时间
+     */
+    private Date modifyTime;
+
+    /**
+     * 状态
+     */
+    private Integer status = FileDetailStatus.INTI.getValue();
 
 }
