@@ -35,7 +35,6 @@ public class FileDetailService extends ServiceImpl<FileDetailMapper, FileDetail>
     @Override
     public boolean save(FileInfo info) {
         FileDetail detail = BeanUtil.copyProperties(info, FileDetail.class, "attr");
-
         //这是手动获 取附加属性字典 并转成 json 字符串，方便存储在数据库中
         if (info.getAttr() != null) {
             detail.setAttr(new ObjectMapper().writeValueAsString(info.getAttr()));
@@ -53,9 +52,8 @@ public class FileDetailService extends ServiceImpl<FileDetailMapper, FileDetail>
     @SneakyThrows
     @Override
     public FileInfo getByUrl(String url) {
-        FileDetail detail = getOne(new LambdaQueryWrapper<FileDetail>().eq(FileDetail::getUrl, url));
+        FileDetail detail = getOne(new LambdaQueryWrapper<FileDetail>().eq(FileDetail::getId, url));
         FileInfo info = BeanUtil.copyProperties(detail, FileInfo.class, "attr");
-
         //这是手动获取数据库中的 json 字符串 并转成 附加属性字典，方便使用
         if (StrUtil.isNotBlank(detail.getAttr())) {
             info.setAttr(new ObjectMapper().readValue(detail.getAttr(), Dict.class));
@@ -68,6 +66,6 @@ public class FileDetailService extends ServiceImpl<FileDetailMapper, FileDetail>
      */
     @Override
     public boolean delete(String url) {
-        return remove(new LambdaQueryWrapper<FileDetail>().eq(FileDetail::getUrl, url));
+        return remove(new LambdaQueryWrapper<FileDetail>().eq(FileDetail::getId, url));
     }
 }
