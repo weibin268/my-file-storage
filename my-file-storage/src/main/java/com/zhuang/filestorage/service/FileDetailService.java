@@ -60,7 +60,7 @@ public class FileDetailService extends ServiceImpl<FileDetailMapper, FileDetail>
     @SneakyThrows
     @Override
     public FileInfo getByUrl(String url) {
-        FileDetail detail = getOne(new LambdaQueryWrapper<FileDetail>().eq(FileDetail::getId, url));
+        FileDetail detail = getOneByUrl(url);
         FileInfo info = BeanUtil.copyProperties(detail, FileInfo.class, "attr");
         //这是手动获取数据库中的 json 字符串 并转成 附加属性字典，方便使用
         if (StrUtil.isNotBlank(detail.getAttr())) {
@@ -69,37 +69,32 @@ public class FileDetailService extends ServiceImpl<FileDetailMapper, FileDetail>
         return info;
     }
 
+    public FileDetail getOneByUrl(String url) {
+        return getOne(new LambdaQueryWrapper<FileDetail>().eq(FileDetail::getUrl, url));
+    }
+
     /**
      * 根据 url 删除文件信息
      */
     @Override
     public boolean delete(String url) {
-        return remove(new LambdaQueryWrapper<FileDetail>().eq(FileDetail::getId, url));
+        return remove(new LambdaQueryWrapper<FileDetail>().eq(FileDetail::getUrl, url));
     }
 
-    public boolean deleteById(String id) {
-        FileDetail fileDetail = getById(id);
-        if (fileDetail.getStatus().equals(FileDetailStatus.SUBMITTED.getValue())) {
-            return false;
-        } else {
-            return delete(id);
-        }
+    public void submitObjectTypeAndObjectId(String objectType, String objectId, String fileUrl) {
+        submitObjectTypeAndObjectId(objectType, objectId, Arrays.asList(fileUrl));
     }
 
-    public void submitObjectTypeAndObjectId(String objectType, String objectId, String fileId) {
-        submitObjectTypeAndObjectId(objectType, objectId, Arrays.asList(fileId));
-    }
-
-    public void submitObjectTypeAndObjectId(String objectType, String objectId, List<String> fileIdList) {
+    public void submitObjectTypeAndObjectId(String objectType, String objectId, List<String> fileUrlList) {
         List<FileDetail> list4Old = getListByObjectTypeAndObjectId(objectType, objectId);
-        List<String> fileIdList4Old = list4Old.stream().map(FileDetail::getId).collect(Collectors.toList());
-        List<String> fileIdList4Add = fileIdList.stream().filter(fileId -> !fileIdList4Old.stream().anyMatch(c -> c.equals(fileId))).collect(Collectors.toList());
-        List<String> fileIdList4Del = fileIdList4Old.stream().filter(fileId -> !fileIdList.stream().anyMatch(c -> c.equals(fileId))).collect(Collectors.toList());
-        fileIdList4Add.forEach(fileId -> {
+        List<String> fileUrlList4Old = list4Old.stream().map(FileDetail::getUrl).collect(Collectors.toList());
+        List<String> fileUrlList4Add = fileUrlList.stream().filter(fileUrl -> !fileUrlList4Old.stream().anyMatch(c -> c.equals(fileUrl))).collect(Collectors.toList());
+        List<String> fileUrlList4Del = fileUrlList4Old.stream().filter(fileUrl -> !fileUrlList.stream().anyMatch(c -> c.equals(fileUrl))).collect(Collectors.toList());
+        fileUrlList4Add.forEach(fileId -> {
             updateObjectTypeAndObjectId(fileId, objectType, objectId);
         });
-        fileIdList4Del.forEach(fileId -> {
-            updateObjectTypeAndObjectId(fileId, null, null);
+        fileUrlList4Del.forEach(fileUrl -> {
+            updateObjectTypeAndObjectId(fileUrl, null, null);
         });
     }
 
@@ -115,13 +110,13 @@ public class FileDetailService extends ServiceImpl<FileDetailMapper, FileDetail>
         );
     }
 
-    public void updateObjectTypeAndObjectId(String id, String objectType, String objectId) {
+    public void updateObjectTypeAndObjectId(String url, String objectType, String objectId) {
         FileDetailStatus status = FileDetailStatus.SUBMITTED;
         if (objectType == null || objectId == null) {
             status = FileDetailStatus.INTI;
         }
         update(new LambdaUpdateWrapper<FileDetail>()
-                .eq(FileDetail::getId, id)
+                .eq(FileDetail::getUrl, url)
                 .set(FileDetail::getObjectType, objectType)
                 .set(FileDetail::getObjectId, objectId)
                 .set(FileDetail::getModifyTime, new Date())

@@ -1,9 +1,11 @@
 package com.zhuang.filestorage.controller;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.xuyanwu.spring.file.storage.FileInfo;
 import cn.xuyanwu.spring.file.storage.FileStorageService;
 import com.zhuang.filestorage.entity.FileDetail;
+import com.zhuang.filestorage.enums.FileDetailStatus;
 import com.zhuang.filestorage.model.ApiResult;
 import com.zhuang.filestorage.service.FileDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,8 +60,8 @@ public class FileStorageController {
      * 上传文件 下载
      */
     @GetMapping(value = "download")
-    public void download(String fileId, HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException {
-        FileInfo fileInfo = fileStorageService.getFileInfoByUrl(fileId);
+    public void download(String fileUrl, HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException {
+        FileInfo fileInfo = fileStorageService.getFileInfoByUrl(fileUrl);
         String fileName = new String(fileInfo.getFilename().getBytes("utf-8"), "ISO8859-1");//chrome,firefox
         //fileName=URLEncoder.encode(fileName,"utf-8");//IE
         response.setHeader("content-disposition", "attachment;filename=" + fileName);
@@ -80,19 +82,36 @@ public class FileStorageController {
      * 删除上传文件
      */
     @PostMapping("/delete")
-    public ApiResult<String> delete(@RequestParam("fileIds") List<String> fileIds) {
-        for (String fileId : fileIds) {
-            fileDetailService.deleteById(fileId);
+    public ApiResult<String> delete(@RequestParam("fileUrls") List<String> fileUrls) {
+        List<String> fileIds4Success = new ArrayList<>();
+        List<String> fileIds4Fail = new ArrayList<>();
+        for (String fileUrl : fileUrls) {
+            FileDetail fileDetail = fileDetailService.getOneByUrl(fileUrl);
+            if (fileDetail.getStatus().equals(FileDetailStatus.SUBMITTED.getValue())) {
+                fileIds4Fail.add(fileUrl);
+            } else {
+                boolean delete = fileStorageService.delete(fileUrl);
+                if (delete) {
+                    fileIds4Success.add(fileUrl);
+                } else {
+                    fileIds4Fail.add(fileUrl);
+                }
+            }
         }
-        return ApiResult.success("删除成功！");
+        return ApiResult.success(StrUtil.format("删除成功{}条{}，删除失败{}条{}！",
+                fileIds4Success.size(),
+                fileIds4Success.stream().collect(Collectors.joining(",", "(", ")")),
+                fileIds4Fail.size(),
+                fileIds4Fail.stream().collect(Collectors.joining(",", "(", ")"))
+        ));
     }
 
     /**
      * 提交上传记录
      */
     @PostMapping("/submit")
-    public ApiResult<String> submit(String objectType, String objectId, @RequestParam("fileIds") List<String> fileIds) {
-        fileDetailService.submitObjectTypeAndObjectId(objectType, objectId, fileIds);
+    public ApiResult<String> submit(String objectType, String objectId, @RequestParam("fileUrls") List<String> fileUrls) {
+        fileDetailService.submitObjectTypeAndObjectId(objectType, objectId, fileUrls);
         return ApiResult.success("提交成功！");
     }
 
