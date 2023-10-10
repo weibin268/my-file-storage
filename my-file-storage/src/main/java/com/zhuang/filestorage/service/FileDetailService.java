@@ -6,12 +6,19 @@ import cn.hutool.core.util.StrUtil;
 import cn.xuyanwu.spring.file.storage.FileInfo;
 import cn.xuyanwu.spring.file.storage.recorder.FileRecorder;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.extension.conditions.update.LambdaUpdateChainWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhuang.filestorage.entity.FileDetail;
 import com.zhuang.filestorage.mapper.FileDetailMapper;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -67,5 +74,42 @@ public class FileDetailService extends ServiceImpl<FileDetailMapper, FileDetail>
     @Override
     public boolean delete(String url) {
         return remove(new LambdaQueryWrapper<FileDetail>().eq(FileDetail::getId, url));
+    }
+
+    public void saveObjectTypeAndObjectId(String fileId, String objectType, String objectId) {
+        saveObjectTypeAndObjectId(Arrays.asList(fileId), objectType, objectId);
+    }
+
+    public void saveObjectTypeAndObjectId(List<String> fileIdList, String objectType, String objectId) {
+        List<FileDetail> list4Old = getListByObjectTypeAndObjectId(objectType, objectId);
+        List<String> fileIdList4Old = list4Old.stream().map(c -> c.getId()).collect(Collectors.toList());
+        List<String> fileIdList4Add = fileIdList.stream().filter(fileId -> !fileIdList4Old.stream().anyMatch(c -> c.equals(fileId))).collect(Collectors.toList());
+        List<String> fileIdList4Del = fileIdList4Old.stream().filter(fileId -> !fileIdList.stream().anyMatch(c -> c.equals(fileId))).collect(Collectors.toList());
+        fileIdList4Add.forEach(fileId -> {
+            setObjectTypeAndObjectId(fileId, objectType, objectId);
+        });
+        fileIdList4Del.forEach(fileId -> {
+            setObjectTypeAndObjectId(fileId, null, null);
+        });
+    }
+
+    public FileDetail getByObjectTypeAndObjectId(String objectType, String objectId) {
+        List<FileDetail> list = getListByObjectTypeAndObjectId(objectType, objectId);
+        return list.size() > 0 ? list.get(0) : null;
+    }
+
+    public List<FileDetail> getListByObjectTypeAndObjectId(String objectType, String objectId) {
+        return list(new LambdaQueryWrapper<FileDetail>()
+                .eq(FileDetail::getObjectType, objectType)
+                .eq(FileDetail::getObjectId, objectId)
+        );
+    }
+
+    public void setObjectTypeAndObjectId(String id, String objectType, String objectId) {
+        update(new LambdaUpdateWrapper<FileDetail>()
+                .eq(FileDetail::getId, id)
+                .set(FileDetail::getObjectId, objectType)
+                .set(FileDetail::getObjectId, objectId)
+        );
     }
 }
