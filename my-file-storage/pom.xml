@@ -98,6 +98,7 @@
             <artifactId>spring-file-storage</artifactId>
             <version>1.0.3</version>
         </dependency>
+
         <!--begin spring-file-storage:ftp-->
         <dependency>
             <groupId>commons-net</groupId>
@@ -119,6 +120,13 @@
         </dependency>
         <!--end spring-file-storage:ftp-->
 
+        <!--spring-file-storage:webdav-->
+        <dependency>
+            <groupId>com.github.lookfirst</groupId>
+            <artifactId>sardine</artifactId>
+            <version>5.10</version>
+            <optional>true</optional>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>

@@ -65,6 +65,12 @@
             <version>2.11.1</version>
         </dependency>
         <!--end spring-file-storage:ftp-->
+        <!--spring-file-storage:webdav-->
+        <dependency>
+            <groupId>com.github.lookfirst</groupId>
+            <artifactId>sardine</artifactId>
+            <version>5.10</version>
+        </dependency>
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
