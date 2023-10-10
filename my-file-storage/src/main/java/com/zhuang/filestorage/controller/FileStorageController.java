@@ -1,11 +1,11 @@
 package com.zhuang.filestorage.controller;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.xuyanwu.spring.file.storage.FileInfo;
 import cn.xuyanwu.spring.file.storage.FileStorageService;
-import com.baomidou.mybatisplus.extension.api.R;
+import com.zhuang.filestorage.entity.FileDetail;
 import com.zhuang.filestorage.model.ApiResult;
-import lombok.SneakyThrows;
-import org.apache.tomcat.util.http.fileupload.FileUpload;
+import com.zhuang.filestorage.service.FileDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,13 +13,12 @@ import org.springframework.web.multipart.support.StandardMultipartHttpServletReq
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("fileStorage")
@@ -27,6 +26,8 @@ public class FileStorageController {
 
     @Autowired
     private FileStorageService fileStorageService;
+    @Autowired
+    private FileDetailService fileDetailService;
 
     /**
      * 上传文件
@@ -74,4 +75,28 @@ public class FileStorageController {
             }
         });
     }
+
+    /**
+     * 提交上传记录
+     */
+    @PostMapping("/submit")
+    public ApiResult<String> submit(String objectType, String objectId,@RequestParam("fileIds") List<String> fileIds) {
+        fileDetailService.submitObjectTypeAndObjectId(objectType, objectId, fileIds);
+        return ApiResult.success("提交成功！");
+    }
+
+    /**
+     * 获取文件列表
+     */
+    @GetMapping("/getList")
+    public ApiResult<List<FileInfo>> getList(String objectType, String objectId) {
+        List<FileDetail> fileDetailList = fileDetailService.getListByObjectTypeAndObjectId(objectType, objectId);
+        List<FileInfo> fileInfoList = fileDetailList.stream().map(item -> {
+            FileInfo fileInfo = new FileInfo();
+            BeanUtil.copyProperties(item, fileInfo, "attr");
+            return fileInfo;
+        }).collect(Collectors.toList());
+        return ApiResult.success(fileInfoList);
+    }
+
 }

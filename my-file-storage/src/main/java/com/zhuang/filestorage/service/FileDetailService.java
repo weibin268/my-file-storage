@@ -7,16 +7,16 @@ import cn.xuyanwu.spring.file.storage.FileInfo;
 import cn.xuyanwu.spring.file.storage.recorder.FileRecorder;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.extension.conditions.update.LambdaUpdateChainWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhuang.filestorage.entity.FileDetail;
+import com.zhuang.filestorage.enums.FileDetailStatus;
 import com.zhuang.filestorage.mapper.FileDetailMapper;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -76,20 +76,20 @@ public class FileDetailService extends ServiceImpl<FileDetailMapper, FileDetail>
         return remove(new LambdaQueryWrapper<FileDetail>().eq(FileDetail::getId, url));
     }
 
-    public void saveObjectTypeAndObjectId(String fileId, String objectType, String objectId) {
-        saveObjectTypeAndObjectId(Arrays.asList(fileId), objectType, objectId);
+    public void submitObjectTypeAndObjectId(String objectType, String objectId, String fileId) {
+        submitObjectTypeAndObjectId(objectType, objectId, Arrays.asList(fileId));
     }
 
-    public void saveObjectTypeAndObjectId(List<String> fileIdList, String objectType, String objectId) {
+    public void submitObjectTypeAndObjectId(String objectType, String objectId, List<String> fileIdList) {
         List<FileDetail> list4Old = getListByObjectTypeAndObjectId(objectType, objectId);
-        List<String> fileIdList4Old = list4Old.stream().map(c -> c.getId()).collect(Collectors.toList());
+        List<String> fileIdList4Old = list4Old.stream().map(FileDetail::getId).collect(Collectors.toList());
         List<String> fileIdList4Add = fileIdList.stream().filter(fileId -> !fileIdList4Old.stream().anyMatch(c -> c.equals(fileId))).collect(Collectors.toList());
         List<String> fileIdList4Del = fileIdList4Old.stream().filter(fileId -> !fileIdList.stream().anyMatch(c -> c.equals(fileId))).collect(Collectors.toList());
         fileIdList4Add.forEach(fileId -> {
-            setObjectTypeAndObjectId(fileId, objectType, objectId);
+            updateObjectTypeAndObjectId(fileId, objectType, objectId);
         });
         fileIdList4Del.forEach(fileId -> {
-            setObjectTypeAndObjectId(fileId, null, null);
+            updateObjectTypeAndObjectId(fileId, null, null);
         });
     }
 
@@ -105,11 +105,17 @@ public class FileDetailService extends ServiceImpl<FileDetailMapper, FileDetail>
         );
     }
 
-    public void setObjectTypeAndObjectId(String id, String objectType, String objectId) {
+    public void updateObjectTypeAndObjectId(String id, String objectType, String objectId) {
+        FileDetailStatus status = FileDetailStatus.SUBMITTED;
+        if (objectType == null || objectId == null) {
+            status = FileDetailStatus.INTI;
+        }
         update(new LambdaUpdateWrapper<FileDetail>()
                 .eq(FileDetail::getId, id)
-                .set(FileDetail::getObjectId, objectType)
+                .set(FileDetail::getObjectType, objectType)
                 .set(FileDetail::getObjectId, objectId)
+                .set(FileDetail::getModifyTime, new Date())
+                .set(FileDetail::getStatus, status.getValue())
         );
     }
 }
