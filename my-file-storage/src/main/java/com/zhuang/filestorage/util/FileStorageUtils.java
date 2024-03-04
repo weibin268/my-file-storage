@@ -1,13 +1,18 @@
 package com.zhuang.filestorage.util;
 
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.util.ReflectUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.xuyanwu.spring.file.storage.FileInfo;
 import cn.xuyanwu.spring.file.storage.FileStorageService;
 import cn.xuyanwu.spring.file.storage.UploadPretreatment;
 import cn.xuyanwu.spring.file.storage.file.InputStreamFileWrapper;
 import cn.xuyanwu.spring.file.storage.platform.FileStorage;
+import cn.xuyanwu.spring.file.storage.spring.SpringFileStorageProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import sun.reflect.misc.FieldUtil;
 
 import javax.annotation.PostConstruct;
 import java.io.ByteArrayInputStream;
@@ -30,8 +35,10 @@ public class FileStorageUtils {
     public static void download(String platform, String path, Consumer<InputStream> consumer) {
         FileStorage fileStorage = _this.fileStorageService.getFileStorage(platform);
         FileInfo fileInfo = new FileInfo();
-        fileInfo.setBasePath("");
-        fileInfo.setPath(path);
+        fileInfo.setBasePath(ReflectUtil.getFieldValue(fileStorage, "basePath").toString());
+        String fileName = FileUtil.getName(path);
+        fileInfo.setFilename(fileName);
+        fileInfo.setPath(StrUtil.replace(path, fileName, ""));
         fileStorage.download(fileInfo, consumer);
     }
 
@@ -47,7 +54,9 @@ public class FileStorageUtils {
         FileStorage fileStorage = _this.fileStorageService.getFileStorage(platform);
         FileInfo fileInfo = new FileInfo();
         fileInfo.setBasePath("");
-        fileInfo.setPath(path);
+        String fileName = FileUtil.getName(path);
+        fileInfo.setFilename(fileName);
+        fileInfo.setPath(StrUtil.replace(path, fileName, ""));
         UploadPretreatment uploadPretreatment = new UploadPretreatment();
         InputStreamFileWrapper inputStreamFileWrapper = new InputStreamFileWrapper();
         inputStreamFileWrapper.setInputStream(inputStream);
