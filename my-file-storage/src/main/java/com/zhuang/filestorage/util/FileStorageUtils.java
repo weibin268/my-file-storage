@@ -35,7 +35,10 @@ public class FileStorageUtils {
     public static void download(String platform, String path, Consumer<InputStream> consumer) {
         FileStorage fileStorage = _this.fileStorageService.getFileStorage(platform);
         FileInfo fileInfo = new FileInfo();
-        fileInfo.setBasePath(ReflectUtil.getFieldValue(fileStorage, "basePath").toString());
+        Object basePath = ReflectUtil.getFieldValue(fileStorage, "basePath");
+        if (basePath != null) {
+            fileInfo.setBasePath(basePath.toString());
+        }
         String fileName = FileUtil.getName(path);
         fileInfo.setFilename(fileName);
         fileInfo.setPath(StrUtil.replace(path, fileName, ""));
