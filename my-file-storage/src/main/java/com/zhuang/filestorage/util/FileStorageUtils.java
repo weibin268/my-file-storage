@@ -9,10 +9,8 @@ import cn.xuyanwu.spring.file.storage.FileStorageService;
 import cn.xuyanwu.spring.file.storage.UploadPretreatment;
 import cn.xuyanwu.spring.file.storage.file.InputStreamFileWrapper;
 import cn.xuyanwu.spring.file.storage.platform.FileStorage;
-import cn.xuyanwu.spring.file.storage.spring.SpringFileStorageProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import sun.reflect.misc.FieldUtil;
 
 import javax.annotation.PostConstruct;
 import java.io.ByteArrayInputStream;
