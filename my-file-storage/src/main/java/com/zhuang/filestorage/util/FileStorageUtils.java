@@ -31,6 +31,7 @@ public class FileStorageUtils {
     }
 
     public static void download(String platform, String path, Consumer<InputStream> consumer) {
+        path = fixPath(path);
         FileStorage fileStorage = _this.fileStorageService.getFileStorage(platform);
         FileInfo fileInfo = new FileInfo();
         Object basePath = ReflectUtil.getFieldValue(fileStorage, "basePath");
@@ -52,6 +53,7 @@ public class FileStorageUtils {
     }
 
     public static void upload(String platform, String path, InputStream inputStream) {
+        path = fixPath(path);
         FileStorage fileStorage = _this.fileStorageService.getFileStorage(platform);
         FileInfo fileInfo = new FileInfo();
         fileInfo.setBasePath("");
@@ -67,5 +69,19 @@ public class FileStorageUtils {
 
     public static void uploadBytes(String platform, String path, byte[] bytes) {
         upload(platform, path, new ByteArrayInputStream(bytes));
+    }
+
+    /**
+     * 路径需要以“/”开头
+     *
+     * @param path
+     * @return
+     */
+    public static String fixPath(String path) {
+        if (StrUtil.isEmpty(path)) return path;
+        if (!path.startsWith("/")) {
+            path = "/" + path;
+        }
+        return path;
     }
 }
