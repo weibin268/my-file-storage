@@ -4,11 +4,11 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.xuyanwu.spring.file.storage.FileInfo;
-import cn.xuyanwu.spring.file.storage.FileStorageService;
-import cn.xuyanwu.spring.file.storage.UploadPretreatment;
-import cn.xuyanwu.spring.file.storage.file.InputStreamFileWrapper;
-import cn.xuyanwu.spring.file.storage.platform.FileStorage;
+import org.dromara.x.file.storage.core.FileInfo;
+import org.dromara.x.file.storage.core.FileStorageService;
+import org.dromara.x.file.storage.core.file.InputStreamFileWrapper;
+import org.dromara.x.file.storage.core.platform.FileStorage;
+import org.dromara.x.file.storage.core.upload.UploadPretreatment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

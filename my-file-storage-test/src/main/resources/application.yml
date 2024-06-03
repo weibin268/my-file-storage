@@ -14,8 +14,10 @@ spring:
     url: jdbc:mysql://127.0.0.1:3306/upms?useSSL=false&useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true
     username: root
     password: 123456
+
+dromara:
   # 文件存储
-  file-storage:
+  x-file-storage:
     default-platform: local-plus-1
     thumbnail-suffix: ".min.jpg"
     local-plus:
@@ -38,3 +40,10 @@ spring:
         user: admin
         password: 123456
         base-path: dav/zwb/
+    minio:
+      - platform: minio-1
+        enable-storage: true
+        accessKey: "Q4EORZGwSV6SwDC500i8"
+        secretKey: "RF0wsFogD92Uas78PVNppfUmtPAvUsGV9Z4s7qKz"
+        domain: "http://127.0.0.1:9000"
+        bucketName: "test"

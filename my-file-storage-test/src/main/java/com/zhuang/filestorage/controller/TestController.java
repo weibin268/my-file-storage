@@ -1,9 +1,9 @@
 package com.zhuang.filestorage.controller;
 
 import cn.hutool.core.io.FileUtil;
-import cn.xuyanwu.spring.file.storage.FileInfo;
 import com.zhuang.filestorage.model.ApiResult;
 import com.zhuang.filestorage.util.FileStorageUtils;
+import org.dromara.x.file.storage.core.FileInfo;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

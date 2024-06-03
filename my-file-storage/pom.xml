@@ -11,7 +11,7 @@
 
     <groupId>com.github.weibin268</groupId>
     <artifactId>my-file-storage</artifactId>
-    <version>1.0.0</version>
+    <version>2.0.0</version>
     <packaging>jar</packaging>
     <name>my-file-storage</name>
     <description>my-file-storage</description>
@@ -94,9 +94,9 @@
         </dependency>
         <!--spring-file-storage-->
         <dependency>
-            <groupId>cn.xuyanwu</groupId>
-            <artifactId>spring-file-storage</artifactId>
-            <version>1.0.3</version>
+            <groupId>org.dromara.x-file-storage</groupId>
+            <artifactId>x-file-storage-spring</artifactId>
+            <version>2.1.0</version>
         </dependency>
 
         <!--begin spring-file-storage:ftp-->
@@ -127,6 +127,14 @@
             <version>5.10</version>
             <optional>true</optional>
         </dependency>
+        <!--spring-file-storage:minio-->
+        <dependency>
+            <groupId>io.minio</groupId>
+            <artifactId>minio</artifactId>
+            <version>8.5.10</version>
+            <optional>true</optional>
+        </dependency>
+
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>

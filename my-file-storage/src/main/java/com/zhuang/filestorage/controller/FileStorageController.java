@@ -2,12 +2,12 @@ package com.zhuang.filestorage.controller;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.xuyanwu.spring.file.storage.FileInfo;
-import cn.xuyanwu.spring.file.storage.FileStorageService;
 import com.zhuang.filestorage.entity.FileDetail;
 import com.zhuang.filestorage.enums.FileDetailStatus;
 import com.zhuang.filestorage.model.ApiResult;
 import com.zhuang.filestorage.service.FileDetailService;
+import org.dromara.x.file.storage.core.FileInfo;
+import org.dromara.x.file.storage.core.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;

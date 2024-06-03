@@ -1,6 +1,6 @@
 package com.zhuang.filestorage;
 
-import cn.xuyanwu.spring.file.storage.spring.EnableFileStorage;
+import org.dromara.x.file.storage.spring.EnableFileStorage;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;

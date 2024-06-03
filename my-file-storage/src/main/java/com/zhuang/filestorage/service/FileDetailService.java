@@ -3,8 +3,6 @@ package com.zhuang.filestorage.service;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.StrUtil;
-import cn.xuyanwu.spring.file.storage.FileInfo;
-import cn.xuyanwu.spring.file.storage.recorder.FileRecorder;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -13,6 +11,9 @@ import com.zhuang.filestorage.entity.FileDetail;
 import com.zhuang.filestorage.enums.FileDetailStatus;
 import com.zhuang.filestorage.mapper.FileDetailMapper;
 import lombok.SneakyThrows;
+import org.dromara.x.file.storage.core.FileInfo;
+import org.dromara.x.file.storage.core.recorder.FileRecorder;
+import org.dromara.x.file.storage.core.upload.FilePartInfo;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -54,6 +55,11 @@ public class FileDetailService extends ServiceImpl<FileDetailMapper, FileDetail>
         return b;
     }
 
+    @Override
+    public void update(FileInfo fileInfo) {
+
+    }
+
     /**
      * 根据 url 查询文件信息
      */
@@ -79,6 +85,16 @@ public class FileDetailService extends ServiceImpl<FileDetailMapper, FileDetail>
     @Override
     public boolean delete(String url) {
         return remove(new LambdaQueryWrapper<FileDetail>().eq(FileDetail::getUrl, url));
+    }
+
+    @Override
+    public void saveFilePart(FilePartInfo filePartInfo) {
+
+    }
+
+    @Override
+    public void deleteFilePartByUploadId(String s) {
+
     }
 
     public void submitObjectTypeAndObjectId(String objectType, String objectId, String fileUrl) {
