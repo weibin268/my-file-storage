@@ -35,8 +35,8 @@ public class FileStorageController {
      * 上传文件
      */
     @PostMapping("/upload")
-    public ApiResult<FileInfo> upload(MultipartFile file, String path) {
-        FileInfo upload = fileStorageService.of(file).setPath(path).upload();
+    public ApiResult<FileInfo> upload(MultipartFile file, String path, HttpServletRequest request) {
+        FileInfo upload = fileStorageService.of(file).setContentType(request.getContentType()).setPath(path).upload();
         return ApiResult.success(upload);
     }
 
@@ -49,7 +49,7 @@ public class FileStorageController {
         StandardMultipartHttpServletRequest multipartRequest = (StandardMultipartHttpServletRequest) request;
         for (Map.Entry<String, List<MultipartFile>> entry : multipartRequest.getMultiFileMap().entrySet()) {
             for (MultipartFile file : entry.getValue()) {
-                FileInfo upload = fileStorageService.of(file).setPath(path).upload();
+                FileInfo upload = fileStorageService.of(file).setContentType(request.getContentType()).setPath(path).upload();
                 fileInfoList.add(upload);
             }
         }
