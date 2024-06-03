@@ -24,8 +24,9 @@ public class TestController {
      * 上传文件
      */
     @PostMapping("/upload")
-    public ApiResult<FileInfo> upload(MultipartFile file, String platform, String path) throws IOException {
-        FileStorageUtils.upload(platform, path, file.getInputStream());
+    public ApiResult<FileInfo> upload(MultipartFile file, String platform, String path,HttpServletRequest request) throws IOException {
+        String contentType = request.getContentType();
+        FileStorageUtils.upload(platform, path, file.getInputStream(),contentType);
         return ApiResult.success();
     }
 

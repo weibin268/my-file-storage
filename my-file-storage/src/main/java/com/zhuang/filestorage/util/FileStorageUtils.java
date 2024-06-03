@@ -52,10 +52,11 @@ public class FileStorageUtils {
         return bytes[0];
     }
 
-    public static void upload(String platform, String path, InputStream inputStream) {
+    public static void upload(String platform, String path, InputStream inputStream, String contentType) {
         path = fixPath(path);
         FileStorage fileStorage = _this.fileStorageService.getFileStorage(platform);
         FileInfo fileInfo = new FileInfo();
+        fileInfo.setContentType(contentType);
         fileInfo.setBasePath("");
         String fileName = FileUtil.getName(path);
         fileInfo.setFilename(fileName);
@@ -68,7 +69,7 @@ public class FileStorageUtils {
     }
 
     public static void uploadBytes(String platform, String path, byte[] bytes) {
-        upload(platform, path, new ByteArrayInputStream(bytes));
+        upload(platform, path, new ByteArrayInputStream(bytes), null);
     }
 
     /**
