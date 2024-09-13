@@ -33,6 +33,9 @@ dromara:
         user: ftpadmin
         password: 123456
         base-path: filestorage
+        pool:
+          # 对象空闲超过此时间将逐出（注：没有配置此项时，实际使用一段时间后，池中出现有问题的客户端对象，上传不了文件，但没有报错）
+          minEvictableIdleDuration: 5M
     webdav:
       - platform: webdav-1
         enable-storage: true
