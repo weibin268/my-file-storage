@@ -45,5 +45,5 @@ dromara:
         enable-storage: true
         accessKey: "Q4EORZGwSV6SwDC500i8"
         secretKey: "RF0wsFogD92Uas78PVNppfUmtPAvUsGV9Z4s7qKz"
-        endpoint: "http://127.0.0.1:9000"
+        endPoint: "http://127.0.0.1:9000"
         bucketName: "test"
